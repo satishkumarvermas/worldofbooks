@@ -1,7 +1,10 @@
 📚 World of Books – Web Scraping Project
+
 🔍 Project Overview
 This project is a full-stack web scraping application built to extract book data from the World of Books website and present it through a modern web interface.
+
 The system demonstrates a complete scraping pipeline:
+
 Scraping data using Playwright
 Persisting scraped data into a PostgreSQL database
 Serving data through REST APIs
@@ -9,6 +12,7 @@ Displaying data using a Next.js frontend
 The architecture is designed following industry best practices, where scraping is performed in a controlled environment and production systems serve persisted data for stability and scalability.
 
 🛠️ Tech Stack
+
 Backend
 NestJS – Backend framework
 Playwright – Web scraping
@@ -135,7 +139,8 @@ Search and category filters
 Admin dashboard for scraping control
 
 👨‍💻 Author
-Satish Verma📧 Email: satishverma098123@gmail.com🔗 GitHub: https://github.com/satishkumarvermas
+Satish Verma📧 
+Email: satishverma098123@gmail.com🔗 GitHub: https://github.com/satishkumarvermas
 
 ✅ Conclusion
 This project demonstrates not only web scraping skills, but also:
