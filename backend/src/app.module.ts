@@ -23,6 +23,7 @@ import { ProductDetail } from './product/product-detail.entity';
       synchronize: true,
     }),
 
+    // 🔴 THESE MUST BE HERE
     NavigationModule,
     CategoryModule,
     ProductModule,
