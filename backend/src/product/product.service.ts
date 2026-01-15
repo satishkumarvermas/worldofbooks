@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { chromium } from 'playwright';
-
 import { Product } from './product.entity';
 import { ProductDetail } from './product-detail.entity';
 
@@ -11,38 +10,36 @@ export class ProductService {
   constructor(
     @InjectRepository(Product)
     private productRepo: Repository<Product>,
-
     @InjectRepository(ProductDetail)
     private detailRepo: Repository<ProductDetail>,
   ) {}
 
-  // ==================================================
-  // PRODUCT LIST SCRAPING (WITH PRICE FIX)
-  // ==================================================
   async scrapeProducts() {
-    console.log('🚀 Product scraping started');
+    if (process.env.NODE_ENV === 'production') {
+      return {
+        message:
+          'Scraping is disabled in production. Data is served from the database.',
+      };
+    }
 
     const browser = await chromium.launch({
-      headless: false, // keep false for debugging
+      headless: false,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     try {
       const page = await browser.newPage();
 
-      // ✅ CORRECT & WORKING URL
-      const categoryUrl =
-        'https://www.worldofbooks.com/en-gb/collections/fiction-books';
+      await page.goto(
+        'https://www.worldofbooks.com/en-gb/collections/fiction-books',
+        {
+          timeout: 0,
+          waitUntil: 'domcontentloaded',
+        },
+      );
 
-      await page.goto(categoryUrl, {
-        timeout: 0,
-        waitUntil: 'domcontentloaded',
-      });
-
-      // ⏳ Safe wait for dynamic content
       await page.waitForTimeout(12000);
 
-      // 🔥 STABLE PRODUCT EXTRACTION
       const products = await page.$$eval(
         'a[href*="/products/"]',
         (links) =>
@@ -55,15 +52,9 @@ export class ProductService {
 
               if (!container) return null;
 
-              // --------------------
-              // TITLE
-              // --------------------
               const title =
                 container.querySelector('h3')?.textContent?.trim() || '';
 
-              // --------------------
-              // PRICE (ROBUST LOGIC)
-              // --------------------
               let price = '';
               const priceSelectors = [
                 '[data-testid="price"]',
@@ -84,15 +75,9 @@ export class ProductService {
                 }
               }
 
-              // --------------------
-              // IMAGE
-              // --------------------
               const imageUrl =
                 container.querySelector('img')?.getAttribute('src') || '';
 
-              // --------------------
-              // PRODUCT URL
-              // --------------------
               const productUrl = link.href.startsWith('http')
                 ? link.href
                 : `https://www.worldofbooks.com${link.href}`;
@@ -105,10 +90,8 @@ export class ProductService {
                 productUrl,
               };
             })
-            .filter((p) => p && p.title)
+            .filter((p) => p && p.title),
       );
-
-      console.log(`🧾 Products found: ${products.length}`);
 
       let savedCount = 0;
 
@@ -123,31 +106,29 @@ export class ProductService {
         }
       }
 
-      console.log(`✅ Products saved: ${savedCount}`);
-
       return {
         productsFound: products.length,
         productsSaved: savedCount,
       };
-    } catch (error) {
-      console.error('❌ Product scraping failed:', error);
+    } catch {
       return { error: 'Product scraping failed' };
     } finally {
       await browser.close();
     }
   }
 
-  // ==================================================
-  // GET ALL PRODUCTS
-  // ==================================================
   async findAll() {
     return this.productRepo.find();
   }
 
-  // ==================================================
-  // PRODUCT DETAIL SCRAPING
-  // ==================================================
   async scrapeProductDetail(productId: number) {
+    if (process.env.NODE_ENV === 'production') {
+      return {
+        message:
+          'Detail scraping is disabled in production. Data is served from the database.',
+      };
+    }
+
     const product = await this.productRepo.findOne({
       where: { id: productId },
     });
@@ -206,19 +187,19 @@ export class ProductService {
       });
 
       if (!exists) {
-        const detail = this.detailRepo.create({
-          product,
-          ...data,
-        });
-        await this.detailRepo.save(detail);
+        await this.detailRepo.save(
+          this.detailRepo.create({
+            product,
+            ...data,
+          }),
+        );
       }
 
       return {
         productId: product.id,
         detailSaved: true,
       };
-    } catch (error) {
-      console.error('❌ Product detail scraping failed:', error);
+    } catch {
       return { error: 'Product detail scraping failed' };
     } finally {
       await browser.close();
