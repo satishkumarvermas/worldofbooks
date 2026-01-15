@@ -1,0 +1,59 @@
+{
+  "requestsFinished": 0,
+  "requestsFailed": 1,
+  "requestsRetries": 1,
+  "requestsFailedPerMinute": 0,
+  "requestsFinishedPerMinute": 0,
+  "requestMinDurationMillis": null,
+  "requestMaxDurationMillis": 0,
+  "requestTotalFailedDurationMillis": 112499,
+  "requestTotalFinishedDurationMillis": 0,
+  "crawlerStartedAt": "2026-01-14T19:39:22.883Z",
+  "crawlerFinishedAt": "2026-01-14T19:47:30.017Z",
+  "statsPersistedAt": "2026-01-14T19:47:30.017Z",
+  "crawlerRuntimeMillis": 489722,
+  "crawlerLastStartTimestamp": 1768419560295,
+  "requestRetryHistogram": [
+    null,
+    null,
+    null,
+    1
+  ],
+  "statsId": 0,
+  "requestAvgFailedDurationMillis": 112499,
+  "requestAvgFinishedDurationMillis": null,
+  "requestTotalDurationMillis": 112499,
+  "requestsTotal": 1,
+  "requestsWithStatusCode": {},
+  "errors": {
+    "D:\\worldofbooks\\backend\\node_modules\\@crawlee\\src\\crawlers\\crawler_utils.ts:13:11": {
+      "missing error code": {
+        "Error": {
+          "Navigation timed out after 60 seconds.": {
+            "count": 1
+          }
+        }
+      }
+    }
+  },
+  "retryErrors": {
+    "D:\\worldofbooks\\backend\\node_modules\\@apify\\src\\index.ts:88:74": {
+      "missing error code": {
+        "Error": {
+          "requestHandler timed out after 130 seconds (iqQOnD74SyzGYAW).": {
+            "count": 1
+          }
+        }
+      }
+    },
+    "D:\\worldofbooks\\backend\\node_modules\\@crawlee\\src\\browser-pool.ts:595:19": {
+      "missing error code": {
+        "Error": {
+          "browserController.newPage() failed: _": {
+            "count": 2
+          }
+        }
+      }
+    }
+  }
+}
