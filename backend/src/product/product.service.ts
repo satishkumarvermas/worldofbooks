@@ -24,7 +24,7 @@ export class ProductService {
 
     const browser = await chromium.launch({
       headless: false, // keep false for debugging
-      slowMo: 50,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     try {
@@ -158,7 +158,7 @@ export class ProductService {
 
     const browser = await chromium.launch({
       headless: false,
-      slowMo: 50,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     try {
